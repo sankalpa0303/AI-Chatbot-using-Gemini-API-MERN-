@@ -47,7 +47,7 @@ exports.chatWithGemini = async (req, res) => {
     // Persist user/bot exchange if DB is connected
     try {
       if (ChatMessage.db?.readyState === 1) {
-        await ChatMessage.create({ userMessage: message.trim(), botReply: reply });
+        await ChatMessage.create({ userId: req.userId, userMessage: message.trim(), botReply: reply });
       }
     } catch (dbErr) {
       console.warn("Chat history save skipped", dbErr.message);
@@ -62,13 +62,13 @@ exports.chatWithGemini = async (req, res) => {
   }
 };
 
-exports.getHistory = async (_req, res) => {
+exports.getHistory = async (req, res) => {
   try {
-    if (ChatMessage.db?.readyState !== 1) {
+    if (ChatMessage.db?.readyState !== 1 || !req.userId) {
       return res.json({ history: [] });
     }
 
-    const items = await ChatMessage.find()
+    const items = await ChatMessage.find({ userId: req.userId })
       .sort({ createdAt: -1 })
       .limit(15)
       .lean();

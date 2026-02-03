@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import BackgroundCanvas from './BackgroundCanvas';
+import { useAuth } from '../context/AuthContext';
 
 import './Chatbot.css';
 
@@ -15,6 +16,7 @@ function Chatbot() {
   const [historySearch, setHistorySearch] = useState("");
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
+  const { token } = useAuth();
 
     const quickActions = [
       "Summarize latest chat",
@@ -35,7 +37,9 @@ function Chatbot() {
   useEffect(() => {
     const loadHistory = async () => {
       try {
-        const res = await fetch(`${API_URL}/api/chat/history`);
+        const res = await fetch(`${API_URL}/api/chat/history`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {}
+        });
         if (!res.ok) throw new Error("Failed to load history");
         const data = await res.json();
         if (Array.isArray(data.history)) {
@@ -82,7 +86,10 @@ function Chatbot() {
     try {
       const res = await fetch(`${API_URL}/api/chat`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
         body: JSON.stringify({ message: input.trim() })
       });
 

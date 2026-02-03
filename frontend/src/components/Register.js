@@ -23,9 +23,9 @@ function Register() {
     try {
       await register({ name: form.name, email: form.email, password: form.password });
       setStatus('Account created');
-      navigate('/profile');
+      navigate('/chat');
     } catch (err) {
-      setStatus('Register failed');
+      setStatus(err.message || 'Register failed');
     } finally {
       setLoading(false);
     }

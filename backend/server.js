@@ -5,6 +5,7 @@ require("dotenv").config();
 
 const chatRoutes = require("./routes/chatRoutes");
 const profileRoutes = require("./routes/profileRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 const app = express();
 app.use(cors());
@@ -12,6 +13,7 @@ app.use(express.json());
 
 app.use("/api/chat", chatRoutes);
 app.use("/api/profile", profileRoutes);
+app.use("/api/auth", authRoutes);
 
 // Lightweight health endpoint to inspect Mongo status
 app.get("/health", (_req, res) => {

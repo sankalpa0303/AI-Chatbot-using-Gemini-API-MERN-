@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import BackgroundCanvas from './BackgroundCanvas';
 import './Profile.css';
@@ -11,12 +11,15 @@ function Profile() {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState('');
   const [uploading, setUploading] = useState(false);
-  const { user, updateUser } = useAuth();
+  const { user, updateUser, logout, token } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await fetch(`${API_URL}/api/profile`);
+        const res = await fetch(`${API_URL}/api/profile`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {}
+        });
         const data = await res.json();
         if (data.profile) setProfile(data.profile);
         else if (user) setProfile((p) => ({ ...p, name: user.name || '', email: user.email || '' }));
@@ -36,12 +39,23 @@ function Profile() {
     setLoading(true);
     setStatus('');
     try {
-      const res = await fetch(`${API_URL}/api/profile`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const send = async (method) => fetch(`${API_URL}/api/profile`, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
         body: JSON.stringify(profile),
       });
-      if (!res.ok) throw new Error('Save failed');
+
+      let res = await send('PUT');
+      if (res.status === 404) res = await send('POST');
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || 'Save failed');
+      }
+
       const data = await res.json();
       setProfile(data.profile || profile);
       setStatus('Saved');
@@ -60,7 +74,10 @@ function Profile() {
     setLoading(true);
     setStatus('');
     try {
-      const res = await fetch(`${API_URL}/api/profile`, { method: 'DELETE' });
+      const res = await fetch(`${API_URL}/api/profile`, {
+        method: 'DELETE',
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      });
       if (!res.ok) throw new Error('Delete failed');
       setProfile({ name: '', email: '', bio: '', avatarUrl: '' });
       setStatus('Deleted');
@@ -98,7 +115,7 @@ function Profile() {
       <div className="profile-shell">
         <header className="profile-header">
           <div className="header-left">
-            <Link className="icon-btn" to="/" aria-label="Back">←</Link>
+            <button className="icon-btn" onClick={() => navigate(-1)} aria-label="Back">←</button>
             <div>
               <p className="eyebrow">Account</p>
               <h1 className="title">Profile</h1>
@@ -107,6 +124,9 @@ function Profile() {
           <div className="header-actions">
             <button className="primary" onClick={saveProfile} disabled={loading}>Save</button>
             <button className="ghost" onClick={deleteProfile} disabled={loading}>Delete</button>
+              <button className="ghost" onClick={() => { logout(); navigate('/'); }}>
+                Logout
+              </button>
           </div>
         </header>
 

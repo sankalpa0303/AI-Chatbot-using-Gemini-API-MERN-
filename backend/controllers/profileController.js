@@ -1,8 +1,8 @@
 const Profile = require('../models/Profile');
 
-exports.getProfile = async (_req, res) => {
+exports.getProfile = async (req, res) => {
   try {
-    const profile = await Profile.findOne().lean();
+    const profile = await Profile.findOne({ userId: req.userId }).lean();
     res.json({ profile: profile || null });
   } catch (err) {
     console.error('Get profile failed', err);
@@ -10,29 +10,47 @@ exports.getProfile = async (_req, res) => {
   }
 };
 
-exports.createOrUpdateProfile = async (req, res) => {
+exports.createProfile = async (req, res) => {
   try {
     const { name, email, bio, avatarUrl } = req.body;
-    const existing = await Profile.findOne();
+    const existing = await Profile.findOne({ userId: req.userId });
     if (existing) {
-      existing.name = name ?? existing.name;
-      existing.email = email ?? existing.email;
-      existing.bio = bio ?? existing.bio;
-      existing.avatarUrl = avatarUrl ?? existing.avatarUrl;
-      await existing.save();
-      return res.json({ profile: existing });
+      return res.status(409).json({ error: 'Profile already exists. Use update instead.' });
     }
-    const profile = await Profile.create({ name, email, bio, avatarUrl });
+    const profile = await Profile.create({ userId: req.userId, name, email, bio, avatarUrl });
     res.status(201).json({ profile });
   } catch (err) {
-    console.error('Save profile failed', err);
-    res.status(500).json({ error: 'Failed to save profile' });
+    console.error('Create profile failed', err);
+    res.status(500).json({ error: 'Failed to create profile' });
   }
 };
 
-exports.deleteProfile = async (_req, res) => {
+exports.updateProfile = async (req, res) => {
   try {
-    await Profile.deleteMany({});
+    const { name, email, bio, avatarUrl } = req.body;
+    const next = {};
+    if (name !== undefined) next.name = name;
+    if (email !== undefined) next.email = email;
+    if (bio !== undefined) next.bio = bio;
+    if (avatarUrl !== undefined) next.avatarUrl = avatarUrl;
+    const updated = await Profile.findOneAndUpdate(
+      { userId: req.userId },
+      { $set: next },
+      { new: true }
+    );
+    if (!updated) {
+      return res.status(404).json({ error: 'Profile not found. Create one first.' });
+    }
+    res.json({ profile: updated });
+  } catch (err) {
+    console.error('Update profile failed', err);
+    res.status(500).json({ error: 'Failed to update profile' });
+  }
+};
+
+exports.deleteProfile = async (req, res) => {
+  try {
+    await Profile.deleteMany({ userId: req.userId });
     res.json({ ok: true });
   } catch (err) {
     console.error('Delete profile failed', err);

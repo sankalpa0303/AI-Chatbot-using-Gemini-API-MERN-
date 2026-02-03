@@ -23,9 +23,9 @@ function Login() {
     try {
       await login({ email: form.email, password: form.password });
       setStatus('Welcome back!');
-      navigate('/profile');
+      navigate('/chat');
     } catch (err) {
-      setStatus('Login failed');
+      setStatus(err.message || 'Login failed');
     } finally {
       setLoading(false);
     }
