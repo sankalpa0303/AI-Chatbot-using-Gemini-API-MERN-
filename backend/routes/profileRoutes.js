@@ -1,11 +1,12 @@
 const express = require('express');
-const { getProfile, createOrUpdateProfile, deleteProfile } = require('../controllers/profileController');
+const { getProfile, createProfile, updateProfile, deleteProfile } = require('../controllers/profileController');
+const auth = require('../middleware/auth');
 
 const router = express.Router();
 
-router.get('/', getProfile);
-router.post('/', createOrUpdateProfile);
-router.put('/:id', createOrUpdateProfile); // id ignored for single-profile pattern
-router.delete('/', deleteProfile);
+router.get('/', auth, getProfile);
+router.post('/', auth, createProfile);
+router.put('/', auth, updateProfile);
+router.delete('/', auth, deleteProfile);
 
 module.exports = router;

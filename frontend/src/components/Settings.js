@@ -1,9 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import BackgroundCanvas from './BackgroundCanvas';
 import './Chatbot.css'; // reuse glass variables + fonts
 
 function Settings() {
+  const navigate = useNavigate();
   return (
     <div className="chat-page">
       <BackgroundCanvas />
@@ -18,7 +19,9 @@ function Settings() {
               </div>
             </div>
             <div className="header-actions">
-              <Link className="icon-btn" to="/" aria-label="Back to chat">←</Link>
+              <button className="icon-btn" onClick={() => navigate(-1)} aria-label="Back">
+                ←
+              </button>
             </div>
           </header>
 
