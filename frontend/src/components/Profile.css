@@ -1,0 +1,155 @@
+.profile-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px 40px;
+  position: relative;
+  isolation: isolate;
+}
+
+.profile-shell {
+  position: relative;
+  z-index: 1;
+  width: min(1100px, 100%);
+  background: rgba(14, 22, 43, 0.6);
+  backdrop-filter: blur(18px) saturate(115%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 12px;
+}
+
+.title {
+  margin: 0;
+  font-size: 24px;
+  letter-spacing: -0.01em;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.primary,
+.ghost {
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #e7ecf3;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.primary {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.9), rgba(34, 211, 238, 0.9));
+  color: #0b1224;
+  border-color: rgba(124, 58, 237, 0.45);
+}
+
+.primary:disabled,
+.ghost:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.profile-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 2fr 1fr;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card label {
+  font-size: 13px;
+  color: #9aa5b5;
+  letter-spacing: 0.02em;
+}
+
+.card input,
+.card textarea {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: #e7ecf3;
+  padding: 10px;
+  font-size: 14px;
+}
+
+.card textarea {
+  resize: vertical;
+}
+
+.card input:focus,
+.card textarea:focus {
+  outline: none;
+  border-color: rgba(124, 58, 237, 0.5);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.18);
+}
+
+.preview {
+  align-items: center;
+  text-align: center;
+}
+
+.avatar {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  background-size: cover;
+  background-position: center;
+  display: grid;
+  place-items: center;
+  font-size: 40px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.status {
+  margin: 0;
+  font-size: 13px;
+  color: #9aa5b5;
+}
+
+.muted {
+  color: #9aa5b5;
+  margin: 4px 0;
+}
+
+@media (max-width: 900px) {
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+  .profile-shell { padding: 16px; }
+}

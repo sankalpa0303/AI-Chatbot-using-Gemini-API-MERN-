@@ -11,15 +11,10 @@ function Chatbot() {
   const [messages, setMessages] = useState([]);
   const [sending, setSending] = useState(false);
   const [status] = useState("Online");
+  const [history, setHistory] = useState([]);
+  const [historySearch, setHistorySearch] = useState("");
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
-
-    const history = [
-      "Show Q4 revenue vs Q3",
-      "List tables in sales_db",
-      "Top 5 products by margin",
-      "Generate SQL to join orders + customers"
-    ];
 
     const quickActions = [
       "Summarize latest chat",
@@ -35,6 +30,23 @@ function Chatbot() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Load recent chat history from backend
+  useEffect(() => {
+    const loadHistory = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/chat/history`);
+        if (!res.ok) throw new Error("Failed to load history");
+        const data = await res.json();
+        if (Array.isArray(data.history)) {
+          setHistory(data.history);
+        }
+      } catch (err) {
+        console.warn("History fetch error", err.message);
+      }
+    };
+    loadHistory();
+  }, []);
 
 
   const handleQuickAction = (text) => {
@@ -86,6 +98,7 @@ function Chatbot() {
         timestamp: new Date() 
       };
       setMessages((prev) => [...prev, botMessage]);
+      setHistory((prev) => [userMessage.text, ...prev].slice(0, 15));
     } catch (err) {
       // Show network/API errors in the chat so the user sees what happened.
       setMessages((prev) => [
@@ -110,8 +123,21 @@ function Chatbot() {
         <aside className="side-panel">
           <div className="side-section">
             <div className="side-title">Recent</div>
+            <input
+              className="message-input"
+              style={{ padding: "10px 12px", border: "1px solid var(--border)", borderRadius: "10px", background: "rgba(255,255,255,0.03)", marginBottom: "8px" }}
+              placeholder="Search history..."
+              value={historySearch}
+              onChange={(e) => setHistorySearch(e.target.value)}
+            />
             <div className="history-list">
-              {history.map((item, idx) => (
+              {history
+                .filter((item) =>
+                  !historySearch.trim()
+                    ? true
+                    : item.toLowerCase().includes(historySearch.trim().toLowerCase())
+                )
+                .map((item, idx) => (
                 <button key={idx} className="pill" onClick={() => setInput(item)}>
                   <span className="icon">🔍</span>
                   {item}
@@ -138,7 +164,9 @@ function Chatbot() {
         <div className="chat-shell">
           <header className="chat-header">
             <div className="header-left">
-              <img src="/logo.png" alt="Logo" className="brand-logo" />
+              <Link to="/" aria-label="Home">
+                <img src="/logo.png" alt="Logo" className="brand-logo" />
+              </Link>
               <div className="header-info">
                 <p className="eyebrow">Chatpal</p>
                 <h1 className="chatbot-title">AI Chatbot</h1>
@@ -146,6 +174,7 @@ function Chatbot() {
             </div>
             <div className="header-actions">
               <button className="icon-btn" aria-label="Search">🔍</button>
+              <Link className="icon-btn" to="/profile" aria-label="Profile">👤</Link>
               <Link className="icon-btn" to="/settings" aria-label="Settings">⚙️</Link>
               <div className="badge">{status}</div>
             </div>
