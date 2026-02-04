@@ -53,6 +53,8 @@ function Login() {
           <label>Password</label>
           <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="••••••" required />
 
+          <Link className="ghost" to="/reset">Forgot your password?</Link>
+
           <button className="primary" type="submit" disabled={loading}>Sign In</button>
           {status && <p className="status">{status}</p>}
         </form>

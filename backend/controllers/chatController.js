@@ -70,13 +70,50 @@ exports.getHistory = async (req, res) => {
 
     const items = await ChatMessage.find({ userId: req.userId })
       .sort({ createdAt: -1 })
-      .limit(15)
+      .limit(25)
       .lean();
 
-    const history = items.map((item) => item.userMessage);
+    const history = items.map((item) => ({
+      id: item._id,
+      question: item.userMessage,
+      answer: item.botReply,
+      createdAt: item.createdAt,
+    }));
     return res.json({ history });
   } catch (error) {
     console.error("History fetch failed", error);
     return res.status(500).json({ error: "Failed to fetch history" });
+  }
+};
+
+exports.deleteHistory = async (req, res) => {
+  try {
+    if (ChatMessage.db?.readyState !== 1 || !req.userId) {
+      return res.status(200).json({ success: true });
+    }
+
+    const { id, message } = req.body || {};
+
+    if (!id && !message) {
+      return res.status(400).json({ error: "id or message is required" });
+    }
+
+    const query = { userId: req.userId };
+    if (id) {
+      query._id = id;
+    } else if (message) {
+      query.userMessage = message;
+    }
+
+    const deleted = await ChatMessage.findOneAndDelete(query);
+
+    if (!deleted) {
+      return res.status(404).json({ error: "Entry not found" });
+    }
+
+    return res.json({ success: true });
+  } catch (error) {
+    console.error("History delete failed", error);
+    return res.status(500).json({ error: "Failed to delete history" });
   }
 };
