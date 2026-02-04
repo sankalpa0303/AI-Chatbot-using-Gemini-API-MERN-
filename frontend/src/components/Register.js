@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import BackgroundCanvas from './BackgroundCanvas';
+import octoLogo from './octo1.png';
 import './Auth.css';
 
 function Register() {
@@ -36,7 +37,13 @@ function Register() {
       <BackgroundCanvas />
       <div className="auth-shell">
         <header className="auth-header">
-          <h1>Create Account</h1>
+          <div className="auth-brand">
+            <img src={octoLogo} alt="Octopus AI" className="auth-brand-logo" />
+            <div>
+              <p className="eyebrow">Octopus AI</p>
+              <h1 className="auth-title">Create Account</h1>
+            </div>
+          </div>
           <Link className="ghost" to="/login">Have an account?</Link>
         </header>
         <form className="auth-form" onSubmit={handleSubmit}>

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 
-// Shared data-network background animation
+// Dynamic AI network animation using brand palette
 function BackgroundCanvas() {
   const canvasRef = useRef(null);
 
@@ -14,17 +14,29 @@ function BackgroundCanvas() {
     let height = window.innerHeight;
     let frameId;
 
-    const nodes = Array.from({ length: 68 }, () => createNode());
+    const palette = [
+      { r: 237, g: 101, b: 83, a: 0.32 },  // #ed6553
+      { r: 246, g: 167, b: 91, a: 0.30 },  // #f6a75b
+      { r: 140, g: 137, b: 245, a: 0.34 }, // #8c89f5
+      { r: 175, g: 209, b: 233, a: 0.26 }, // #afd1e9
+    ];
+
+    const nodes = Array.from({ length: 62 }, () => createNode());
+
+    function pickColor() {
+      return palette[Math.floor(Math.random() * palette.length)];
+    }
 
     function createNode() {
+      const color = pickColor();
       return {
         x: Math.random() * width,
         y: Math.random() * height,
-        r: 2 + Math.random() * 2.5,
-        vx: (Math.random() - 0.5) * 0.22,
-        vy: (Math.random() - 0.5) * 0.22,
-        alpha: 0.15 + Math.random() * 0.2,
-        hue: Math.random() > 0.4 ? 200 : 260,
+        r: 2 + Math.random() * 2.4,
+        vx: (Math.random() - 0.5) * 0.26,
+        vy: (Math.random() - 0.5) * 0.26,
+        alpha: color.a,
+        color,
       };
     }
 
@@ -41,6 +53,7 @@ function BackgroundCanvas() {
     function draw() {
       ctx.clearRect(0, 0, width, height);
 
+      // connections
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
           const a = nodes[i];
@@ -48,13 +61,13 @@ function BackgroundCanvas() {
           const dx = a.x - b.x;
           const dy = a.y - b.y;
           const dist2 = dx * dx + dy * dy;
-          const maxDist = 240;
+          const maxDist = 230;
           if (dist2 < maxDist * maxDist) {
             const dist = Math.sqrt(dist2);
-            const opacity = Math.max(0, 0.35 - dist / maxDist) * 0.8;
-            const hue = (a.hue + b.hue) / 2;
-            ctx.strokeStyle = `hsla(${hue}, 80%, 65%, ${opacity})`;
-            ctx.lineWidth = 1;
+            const opacity = Math.max(0, 0.32 - dist / maxDist) * 0.9;
+            const mix = Math.random() < 0.5 ? a.color : b.color;
+            ctx.strokeStyle = `rgba(${mix.r}, ${mix.g}, ${mix.b}, ${opacity})`;
+            ctx.lineWidth = 0.9;
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
@@ -63,32 +76,32 @@ function BackgroundCanvas() {
         }
       }
 
+      // nodes
       nodes.forEach((p, idx) => {
         p.x += p.vx;
         p.y += p.vy;
 
-        if (p.x < -10) p.x = width + 10;
-        if (p.x > width + 10) p.x = -10;
-        if (p.y < -10) p.y = height + 10;
-        if (p.y > height + 10) p.y = -10;
+        if (p.x < -12) p.x = width + 12;
+        if (p.x > width + 12) p.x = -12;
+        if (p.y < -12) p.y = height + 12;
+        if (p.y > height + 12) p.y = -12;
 
-        const glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 24);
-        const color = `hsla(${p.hue}, 90%, 68%, ${p.alpha})`;
-        glow.addColorStop(0, color);
-        glow.addColorStop(1, "rgba(7, 13, 29, 0)");
+        const glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 26);
+        glow.addColorStop(0, `rgba(${p.color.r}, ${p.color.g}, ${p.color.b}, ${p.alpha})`);
+        glow.addColorStop(1, "rgba(13, 8, 26, 0)");
 
         ctx.beginPath();
         ctx.fillStyle = glow;
-        ctx.arc(p.x, p.y, 14, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, 16, 0, Math.PI * 2);
         ctx.fill();
 
         ctx.beginPath();
-        ctx.fillStyle = `hsla(${p.hue}, 90%, 78%, 0.9)`;
+        ctx.fillStyle = `rgba(${p.color.r}, ${p.color.g}, ${p.color.b}, 0.9)`;
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fill();
 
-        if (idx % 8 === 0) {
-          p.alpha = 0.12 + Math.random() * 0.2;
+        if (idx % 9 === 0) {
+          p.alpha = 0.24 + Math.random() * 0.18;
         }
       });
 
