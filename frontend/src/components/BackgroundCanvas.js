@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 
-// Dynamic AI network animation using brand palette
+// Dynamic AI-inspired canvas with flowing signal waves and grid
 function BackgroundCanvas() {
   const canvasRef = useRef(null);
 
@@ -15,28 +15,19 @@ function BackgroundCanvas() {
     let frameId;
 
     const palette = [
-      { r: 237, g: 101, b: 83, a: 0.32 },  // #ed6553
-      { r: 246, g: 167, b: 91, a: 0.30 },  // #f6a75b
-      { r: 140, g: 137, b: 245, a: 0.34 }, // #8c89f5
-      { r: 175, g: 209, b: 233, a: 0.26 }, // #afd1e9
+      { r: 237, g: 101, b: 83, a: 0.26 },  // coral
+      { r: 246, g: 167, b: 91, a: 0.24 },  // amber
+      { r: 140, g: 137, b: 245, a: 0.30 }, // lavender
+      { r: 141, g: 217, b: 255, a: 0.24 }, // cyan
     ];
 
-    const nodes = Array.from({ length: 62 }, () => createNode());
+    const waves = Array.from({ length: 3 }, (_, i) => createWave(i));
 
-    function pickColor() {
-      return palette[Math.floor(Math.random() * palette.length)];
-    }
-
-    function createNode() {
-      const color = pickColor();
+    function createWave(idx) {
       return {
-        x: Math.random() * width,
-        y: Math.random() * height,
-        r: 2 + Math.random() * 2.4,
-        vx: (Math.random() - 0.5) * 0.26,
-        vy: (Math.random() - 0.5) * 0.26,
-        alpha: color.a,
-        color,
+        offset: Math.random() * Math.PI * 2,
+        speed: 0.15 + idx * 0.05,
+        amp: 16 + idx * 8,
       };
     }
 
@@ -53,56 +44,39 @@ function BackgroundCanvas() {
     function draw() {
       ctx.clearRect(0, 0, width, height);
 
-      // connections
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const a = nodes[i];
-          const b = nodes[j];
-          const dx = a.x - b.x;
-          const dy = a.y - b.y;
-          const dist2 = dx * dx + dy * dy;
-          const maxDist = 230;
-          if (dist2 < maxDist * maxDist) {
-            const dist = Math.sqrt(dist2);
-            const opacity = Math.max(0, 0.32 - dist / maxDist) * 0.9;
-            const mix = Math.random() < 0.5 ? a.color : b.color;
-            ctx.strokeStyle = `rgba(${mix.r}, ${mix.g}, ${mix.b}, ${opacity})`;
-            ctx.lineWidth = 0.9;
-            ctx.beginPath();
-            ctx.moveTo(a.x, a.y);
-            ctx.lineTo(b.x, b.y);
-            ctx.stroke();
-          }
-        }
+      // faint grid
+      ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < width; x += 140) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+        ctx.stroke();
+      }
+      for (let y = 0; y < height; y += 140) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+        ctx.stroke();
       }
 
-      // nodes
-      nodes.forEach((p, idx) => {
-        p.x += p.vx;
-        p.y += p.vy;
-
-        if (p.x < -12) p.x = width + 12;
-        if (p.x > width + 12) p.x = -12;
-        if (p.y < -12) p.y = height + 12;
-        if (p.y > height + 12) p.y = -12;
-
-        const glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 26);
-        glow.addColorStop(0, `rgba(${p.color.r}, ${p.color.g}, ${p.color.b}, ${p.alpha})`);
-        glow.addColorStop(1, "rgba(13, 8, 26, 0)");
-
+      // flowing waves
+      const t = performance.now() / 1000;
+      waves.forEach((w, idx) => {
         ctx.beginPath();
-        ctx.fillStyle = glow;
-        ctx.arc(p.x, p.y, 16, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.fillStyle = `rgba(${p.color.r}, ${p.color.g}, ${p.color.b}, 0.9)`;
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fill();
-
-        if (idx % 9 === 0) {
-          p.alpha = 0.24 + Math.random() * 0.18;
+        const grad = ctx.createLinearGradient(0, 0, width, 0);
+        const c = palette[idx % palette.length];
+        grad.addColorStop(0, `rgba(${c.r}, ${c.g}, ${c.b}, 0.07)`);
+        grad.addColorStop(1, `rgba(${c.r}, ${c.g}, ${c.b}, 0.16)`);
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 1.6;
+        const baseY = height * (0.3 + idx * 0.2);
+        for (let x = 0; x <= width; x += 12) {
+          const y = baseY + Math.sin((x / 160) + t * w.speed + w.offset) * w.amp;
+          if (x === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
         }
+        ctx.stroke();
       });
 
       frameId = requestAnimationFrame(draw);

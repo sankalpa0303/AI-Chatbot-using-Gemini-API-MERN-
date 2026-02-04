@@ -7,17 +7,19 @@ const TOKEN_KEY = 'app_token';
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
+  const [user, setUser] = useState(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        setUser(JSON.parse(raw));
-      }
+      return raw ? JSON.parse(raw) : null;
     } catch (err) {
       console.warn('Auth load failed', err);
+      return null;
     }
+  });
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    setReady(true);
   }, []);
 
   const persist = (next, token) => {
@@ -69,10 +71,39 @@ export function AuthProvider({ children }) {
     persist(next, token);
   };
 
+  const requestPasswordReset = async (email) => {
+    const res = await fetch(`${API_URL}/api/auth/reset/request`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.error || 'Password reset request failed');
+    }
+    return data;
+  };
+
+  const confirmPasswordReset = async ({ email, token, password }) => {
+    const res = await fetch(`${API_URL}/api/auth/reset/confirm`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, token, password })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.error || 'Password reset failed');
+    }
+    if (data.user && data.token) {
+      persist(data.user, data.token);
+    }
+    return data;
+  };
+
   const token = localStorage.getItem(TOKEN_KEY) || undefined;
 
   return (
-    <AuthContext.Provider value={{ user, token, register, login, logout, updateUser }}>
+    <AuthContext.Provider value={{ user, token, ready, register, login, logout, updateUser, requestPasswordReset, confirmPasswordReset }}>
       {children}
     </AuthContext.Provider>
   );
