@@ -40,25 +40,86 @@ function Login() {
           <div className="auth-brand">
             <img src={octoLogo} alt="Octopus AI" className="auth-brand-logo" />
             <div>
-
+              <p className="eyebrow">Welcome Back</p>
               <h1 className="auth-title">Sign In</h1>
             </div>
           </div>
-          <Link className="ghost" to="/register">Need an account?</Link>
+          <Link className="ghost" to="/register">
+            <i className="fa-solid fa-user-plus"></i>
+            Need an account?
+          </Link>
         </header>
+
         <form className="auth-form" onSubmit={handleSubmit}>
-          <label>Email</label>
-          <input name="email" value={form.email} onChange={handleChange} placeholder="you@example.com" required />
+          <div className="form-group">
+            <label htmlFor="email">
+              <i className="fa-solid fa-envelope"></i>
+              Email Address
+            </label>
+            <input 
+              id="email"
+              name="email" 
+              type="email"
+              value={form.email} 
+              onChange={handleChange} 
+              placeholder="you@example.com" 
+              required 
+              autoComplete="email"
+            />
+          </div>
 
-          <label>Password</label>
-          <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="••••••" required />
+          <div className="form-group">
+            <label htmlFor="password">
+              <i className="fa-solid fa-lock"></i>
+              Password
+            </label>
+            <input 
+              id="password"
+              name="password" 
+              type="password" 
+              value={form.password} 
+              onChange={handleChange} 
+              placeholder="••••••••" 
+              required 
+              autoComplete="current-password"
+            />
+          </div>
 
-          <Link className="ghost" to="/reset">Forgot your password?</Link>
+          <div className="form-footer">
+            <Link className="text-link" to="/reset">
+              <i className="fa-solid fa-key"></i>
+              Forgot password?
+            </Link>
+          </div>
 
-          <button className="primary" type="submit" disabled={loading}>Sign In</button>
-          {status && <p className="status">{status}</p>}
+          <button className="primary" type="submit" disabled={loading}>
+            {loading ? (
+              <>
+                <i className="fa-solid fa-spinner fa-spin"></i>
+                Signing in...
+              </>
+            ) : (
+              <>
+                <i className="fa-solid fa-right-to-bracket"></i>
+                Sign In
+              </>
+            )}
+          </button>
+
+          {status && (
+            <div className={`status-message ${status.includes('failed') || status.includes('error') ? 'error' : 'success'}`}>
+              <i className={`fa-solid ${status.includes('failed') || status.includes('error') ? 'fa-circle-exclamation' : 'fa-circle-check'}`}></i>
+              {status}
+            </div>
+          )}
         </form>
-        <Link className="icon-btn" to="/">← Back</Link>
+
+        <div className="auth-footer">
+          <Link className="back-link" to="/">
+            <i className="fa-solid fa-arrow-left"></i>
+            Back to Home
+          </Link>
+        </div>
       </div>
     </div>
   );

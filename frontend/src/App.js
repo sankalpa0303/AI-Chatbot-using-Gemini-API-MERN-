@@ -9,6 +9,8 @@ import ResetPassword from './components/ResetPassword';
 import History from './components/History';
 import { AuthProvider } from './context/AuthContext';
 import RequireAuth from './components/RequireAuth';
+import About from './components/about';
+
 
 function App() {
   return (
@@ -23,6 +25,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/reset" element={<ResetPassword />} />
+          <Route path="/about" element={<About />} />
         </Routes>
       </Router>
     </AuthProvider>

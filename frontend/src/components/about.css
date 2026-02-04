@@ -1,0 +1,209 @@
+:root {
+  --bg: #0d081a;
+  --panel: #140c28;
+  --glass: rgba(255, 255, 255, 0.06);
+  --border: rgba(255, 255, 255, 0.12);
+  --text: #f7f2ff;
+  --muted: #b0b2c3;
+  --accent: #ed6553;
+  --accent-2: #8c89f5;
+  --radius: 14px;
+}
+
+.about-page {
+  height: 100vh;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  overflow: hidden;
+}
+
+.about-container {
+  max-width: 1000px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 1.5rem;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  width: fit-content;
+}
+
+.back-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--accent-2);
+  transform: translateX(-4px);
+}
+
+.chat-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  padding: 3rem;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 4px);
+  background: radial-gradient(circle at 50% 20%, rgba(237, 101, 83, 0.14), transparent 40%),
+    radial-gradient(circle at 50% 80%, rgba(140, 137, 245, 0.14), transparent 40%),
+    rgba(255, 255, 255, 0.03);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
+}
+
+.brand-mark {
+  display: inline-flex;
+  border-radius: 14px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.brand-logo {
+  width: 140px;
+  height: 140px;
+  border-radius: 16px;
+  object-fit: contain;
+  border: none;
+  background: transparent;
+  box-shadow: 0 8px 32px rgba(140, 137, 245, 0.3);
+}
+
+.hero-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.chatbot-title {
+  margin: 0;
+  font-size: 2.5rem;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--text), var(--accent-2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.version-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-2);
+  background: rgba(140, 137, 245, 0.15);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(140, 137, 245, 0.3);
+}
+
+.about-description {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.7;
+  max-width: 700px;
+  margin: 0.5rem 0 0 0;
+}
+
+.features-container {
+  width: 100%;
+  max-width: 800px;
+  margin-top: 1rem;
+}
+
+.mutedhead {
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 600;
+  color: #ed6553;
+  background: linear-gradient(
+    90deg,
+    rgba(140, 137, 245, 0.12),
+    rgba(246, 167, 91, 0.12),
+    rgba(237, 101, 83, 0.12)
+  );
+  padding: 0.65rem 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(140, 137, 245, 0.25);
+  backdrop-filter: blur(6px);
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem 2rem;
+  width: 100%;
+}
+
+.feature-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.muted {
+  color: var(--muted);
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: left;
+}
+
+@media (max-width: 768px) {
+  .about-page {
+    padding: 1rem;
+  }
+
+  .chat-hero {
+    padding: 2rem 1.5rem;
+    gap: 1.5rem;
+  }
+
+  .brand-logo {
+    width: 100px;
+    height: 100px;
+  }
+
+  .chatbot-title {
+    font-size: 1.75rem;
+  }
+
+  .about-description {
+    font-size: 14px;
+  }
+
+  .feature-grid {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+
+  .muted {
+    font-size: 13px;
+  }
+}

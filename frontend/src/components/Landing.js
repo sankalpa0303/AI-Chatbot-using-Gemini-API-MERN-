@@ -10,7 +10,7 @@ function Landing() {
       <BackgroundCanvas />
 
       <div className="auth-hero">
-        <div>
+        <div className="hero-content">
           <div className="hero-brand">
             <div>
               <h1 className="hero-title">
@@ -24,12 +24,17 @@ function Landing() {
           </p>
 
           <div className="cta-row">
-            <Link className="primary" to="/login">Sign In</Link>
-            <Link className="ghost" to="/register">Sign Up</Link>
+            <Link className="primary" to="/login">
+              <i className="fa-solid fa-right-to-bracket"></i>
+              Sign In
+            </Link>
+            <Link className="ghost" to="/register">
+              <i className="fa-solid fa-user-plus"></i>
+              Sign Up
+            </Link>
           </div>
         </div>
 
-        {/* Large landing logo without video */}
         <img
           className="landing-logo"
           src={octoLogo}
