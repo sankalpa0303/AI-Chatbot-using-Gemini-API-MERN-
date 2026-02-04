@@ -40,7 +40,7 @@ function Login() {
           <div className="auth-brand">
             <img src={octoLogo} alt="Octopus AI" className="auth-brand-logo" />
             <div>
-              <p className="eyebrow">Octopus AI</p>
+
               <h1 className="auth-title">Sign In</h1>
             </div>
           </div>
