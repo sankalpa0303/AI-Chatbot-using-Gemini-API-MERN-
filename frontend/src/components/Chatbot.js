@@ -16,6 +16,7 @@ function Chatbot() {
   const [history, setHistory] = useState([]);
   const [historySearch, setHistorySearch] = useState("");
   const [confirmIdx, setConfirmIdx] = useState(null);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
@@ -44,7 +45,6 @@ function Chatbot() {
     scrollToBottom();
   }, [messages]);
 
-  // Restore messages from local storage when user/session changes
   useEffect(() => {
     try {
       const raw = localStorage.getItem(storageKey);
@@ -62,7 +62,6 @@ function Chatbot() {
     }
   }, [storageKey]);
 
-  // Persist messages for current session/user
   useEffect(() => {
     try {
       localStorage.setItem(storageKey, JSON.stringify(messages));
@@ -155,8 +154,10 @@ function Chatbot() {
   };
 
   const handleLogout = () => {
-    const ok = window.confirm("Are you sure you want to logout?");
-    if (!ok) return;
+    setShowLogoutConfirm(true);
+  };
+
+  const confirmLogout = () => {
     try {
       localStorage.removeItem(storageKey);
     } catch (err) {
@@ -164,8 +165,11 @@ function Chatbot() {
     }
     setHistory([]);
     logout();
-    navigate("/login");
+    setShowLogoutConfirm(false);
+    navigate("/");
   };
+
+  const cancelLogout = () => setShowLogoutConfirm(false);
 
   const sendMessage = async () => {
     if (!input.trim() || sending) return;
@@ -226,21 +230,17 @@ function Chatbot() {
       <div className="chat-layout">
         <aside className="side-panel">
           <div className="side-section">
-             <div className="side-section">
-            <div className="side-title">Status</div>
-            <div className={`status-chip ${status.toLowerCase()}`}>{status}</div>
+            
+            <div className="status-row">
+              <span className="status-name">Octopus_AI</span>
+              <div className={`status-chip ${status.toLowerCase()}`}>{status}</div>
+            </div>
           </div>
 
+          <div className="side-section">
             <div className="side-title">Recent</div>
             <input
-              className="message-input"
-              style={{
-                padding: "10px 12px",
-                border: "1px solid var(--border)",
-                borderRadius: "10px",
-                background: "rgba(255,255,255,0.03)",
-                marginBottom: "8px",
-              }}
+              className="history-search-input"
               placeholder="Search history..."
               value={historySearch}
               onChange={(e) => setHistorySearch(e.target.value)}
@@ -287,6 +287,7 @@ function Chatbot() {
               View all chats
             </Link>
           </div>
+
           <div className="side-section">
             <div className="side-title">Shortcuts</div>
             <div className="pill-row">
@@ -302,8 +303,13 @@ function Chatbot() {
               ))}
             </div>
           </div>
-         
+
           <div className="side-footer">
+            <Link className="icon-btn" to="/about" aria-label="about">
+              <i className="fa-solid fa-user-astronaut"></i>
+              <span>Abount</span>
+            </Link>
+
             <Link className="icon-btn" to="/profile" aria-label="Profile">
               <i className="fa-solid fa-user"></i>
               <span>Profile</span>
@@ -324,31 +330,15 @@ function Chatbot() {
             </button>
           </div>
         </aside>
-
+            
         <div className={`chat-shell ${!showMessages ? "empty-state" : ""}`}>
           {showHero && (
-            <div className="chat-hero">
-  <div className="chat-brand">
-    <Link to="/" aria-label="Home" className="brand-mark">
-      <img src={octoLogo} alt="Octopus AI" className="brand-logo" />
-    </Link>
+            <>
 
-    <div>
-      <h1 className="chatbot-title">Your Intelligent Data & Productivity Assistant</h1>
-
-      <p className="mutedhead">What I can help you with:</p>
-
-      <p className="muted">• Answer questions instantly with AI-powered responses</p>
-      <p className="muted">• Generate and optimize SQL queries</p>
-      <p className="muted">• Explain programming errors and suggest fixes</p>
-      <p className="muted">• Analyze uploaded files (CSV, Excel, JSON, TXT)</p>
-      <p className="muted">• Summarize long conversations and documents</p>
-      <p className="muted">• Assist with coding, debugging, and development tasks</p>
-      <p className="muted">• Provide data insights and quick analytics suggestions</p>
-    </div>
-  </div>
-</div>
-
+              <div className="prompt-card">
+                <p className="prompt-card-text">What can I help with?</p>
+              </div>
+            </>
           )}
 
           {showMessages && (
@@ -469,6 +459,22 @@ function Chatbot() {
             <div className="modal-actions">
               <button className="pill pill-ghost" onClick={closeDeleteConfirm}>Cancel</button>
               <button className="pill" onClick={confirmDelete}>Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showLogoutConfirm && (
+        <div className="modal-backdrop">
+          <div className="modal-card logout-modal">
+            <div className="logout-icon">
+              <i className="fa-solid fa-right-from-bracket"></i>
+            </div>
+            <h3>Sign out?</h3>
+            <p className="muted">You will be redirected to the landing page.</p>
+            <div className="modal-actions">
+              <button className="pill pill-ghost" onClick={cancelLogout}>Stay</button>
+              <button className="pill pill-accent" onClick={confirmLogout}>Logout</button>
             </div>
           </div>
         </div>
