@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import BackgroundCanvas from "./BackgroundCanvas";
 import { useAuth } from "../context/AuthContext";
-import octoLogo from "./octo1.png";
 
 import "./Chatbot.css";
 
@@ -17,6 +16,7 @@ function Chatbot() {
   const [historySearch, setHistorySearch] = useState("");
   const [confirmIdx, setConfirmIdx] = useState(null);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
@@ -230,7 +230,6 @@ function Chatbot() {
       <div className="chat-layout">
         <aside className="side-panel">
           <div className="side-section">
-            
             <div className="status-row">
               <span className="status-name">Octopus_AI</span>
               <div className={`status-chip ${status.toLowerCase()}`}>{status}</div>
@@ -269,7 +268,7 @@ function Chatbot() {
                         {text}
                       </button>
                       <button
-                        className="icon-btn icon-sm"
+                        className="icon-btn-chat icon-sm"
                         aria-label="Delete history"
                         onClick={(e) => {
                           e.stopPropagation();
@@ -304,30 +303,42 @@ function Chatbot() {
             </div>
           </div>
 
-          <div className="side-footer">
-            <Link className="icon-btn" to="/about" aria-label="about">
-              <i className="fa-solid fa-user-astronaut"></i>
-              <span>Abount</span>
-            </Link>
-
-            <Link className="icon-btn" to="/profile" aria-label="Profile">
-              <i className="fa-solid fa-user"></i>
-              <span>Profile</span>
-            </Link>
-
-            <Link className="icon-btn" to="/settings" aria-label="Settings">
-              <i className="fa-solid fa-gear"></i>
-              <span>Settings</span>
-            </Link>
-
+          <div className="side-menu">
             <button
-              className="icon-btn logout-btn"
-              onClick={handleLogout}
-              aria-label="Logout"
+              className="pill full-width"
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-label="Toggle menu"
             >
-              <i className="fa-solid fa-right-from-bracket"></i>
-              <span>Logout</span>
+              <i className="fa-solid fa-bars"></i>
+              Menu
             </button>
+            {menuOpen && (
+              <div className="menu-card-chat">
+                <Link className="icon-btn-chat" to="/about" aria-label="about">
+                  <i className="fa-solid fa-user-astronaut"></i>
+                  <span>About</span>
+                </Link>
+
+                <Link className="icon-btn-chat" to="/profile" aria-label="Profile">
+                  <i className="fa-solid fa-user"></i>
+                  <span>Profile</span>
+                </Link>
+
+                <Link className="icon-btn-chat" to="/settings" aria-label="Settings">
+                  <i className="fa-solid fa-gear"></i>
+                  <span>Settings</span>
+                </Link>
+
+                <button
+                  className="icon-btn-chat logout-btn"
+                  onClick={handleLogout}
+                  aria-label="Logout"
+                >
+                  <i className="fa-solid fa-right-from-bracket"></i>
+                  <span>Logout</span>
+                </button>
+              </div>
+            )}
           </div>
         </aside>
             
@@ -336,7 +347,7 @@ function Chatbot() {
             <>
 
               <div className="prompt-card">
-                <p className="prompt-card-text">What can I help with?</p>
+                <p className="prompt-card-text">What can I help you with today?</p>
               </div>
             </>
           )}
@@ -392,7 +403,7 @@ function Chatbot() {
               />
 
               <button
-                className="icon-btn icon-sm"
+                className="icon-btn-chat icon-sm"
                 onClick={handleUploadClick}
                 aria-label="Upload file"
               >
@@ -400,14 +411,14 @@ function Chatbot() {
               </button>
 
               <button
-                className="icon-btn icon-sm"
+                className="icon-btn-chat icon-sm"
                 onClick={() => handleQuickAction("Generate SQL for daily sales")}
                 aria-label="Magic"
               >
                 <i className="fa-solid fa-wand-magic-sparkles"></i>
               </button>
 
-              <button className="icon-btn icon-sm" aria-label="Share">
+              <button className="icon-btn-chat icon-sm" aria-label="Share">
                 <i className="fa-solid fa-share-nodes"></i>
               </button>
 
@@ -439,6 +450,10 @@ function Chatbot() {
                 ))}
               </div>
             )}
+
+            <p className="chat-disclaimer">
+              Octopus AI can make mistakes. Check important info.
+            </p>
 
             <input
               ref={fileInputRef}
