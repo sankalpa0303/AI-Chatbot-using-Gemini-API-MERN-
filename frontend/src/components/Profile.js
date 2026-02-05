@@ -28,7 +28,7 @@ function Profile() {
       }
     };
     load();
-  }, [user]);
+  }, [user, token]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
