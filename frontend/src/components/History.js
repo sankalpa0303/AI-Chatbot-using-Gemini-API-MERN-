@@ -90,6 +90,7 @@ function History() {
 
   return (
     <div className="history-page">
+      
       <div className="history-shell">
         <div className="history-head">
           <div>
@@ -124,13 +125,13 @@ function History() {
                     <>
                       <div className="history-actions">
                         <button
-                          className="icon-btn icon-sm"
+                          className="icon-btn-chat icon-sm"
                           onClick={() => toggleOpen(id)}
                         >
                           {openIds.has(id) ? "Hide answer" : "Show answer"}
                         </button>
                         <button
-                          className="icon-btn icon-sm"
+                          className="icon-btn-chat icon-sm"
                           onClick={() => openConfirm(idx)}
                           disabled={busyId === idx}
                         >

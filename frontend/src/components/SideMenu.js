@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import "./sidemenu.css";
 
 function SideMenu({ status = "Online", onLogout }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -23,29 +24,29 @@ function SideMenu({ status = "Online", onLogout }) {
           Menu
         </button>
         {menuOpen && (
-          <div className="menu-card">
-            <Link className="icon-btn" to="/chat" aria-label="about">
+          <div className="menu-card-menu">
+            <Link className="icon-btn-menu" to="/chat" aria-label="about">
               <i className="fa-solid fa-user-astronaut"></i>
               <span>Chat</span>
             </Link>
 
-            <Link className="icon-btn" to="/about" aria-label="about">
+            <Link className="icon-btn-menu" to="/about" aria-label="about">
               <i className="fa-solid fa-user-astronaut"></i>
               <span>About</span>
             </Link>
 
-            <Link className="icon-btn" to="/profile" aria-label="Profile">
+            <Link className="icon-btn-menu" to="/profile" aria-label="Profile">
               <i className="fa-solid fa-user"></i>
               <span>Profile</span>
             </Link>
 
-            <Link className="icon-btn" to="/settings" aria-label="Settings">
+            <Link className="icon-btn-menu" to="/settings" aria-label="Settings">
               <i className="fa-solid fa-gear"></i>
               <span>Settings</span>
             </Link>
 
             <button
-              className="icon-btn logout-btn"
+              className="icon-btn-menu logout-btn"
               onClick={onLogout}
               aria-label="Logout"
             >

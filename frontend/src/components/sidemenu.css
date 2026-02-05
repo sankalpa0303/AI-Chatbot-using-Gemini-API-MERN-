@@ -249,7 +249,7 @@ body {
   position: relative;
 }
 
-.menu-card-chat {
+.menu-card-menu {
   position: absolute;
   bottom: 56px;
   right: -4px;
@@ -267,7 +267,7 @@ body {
   z-index: 5;
 }
 
-.icon-btn-chat{
+.icon-btn-menu{
   border: 1px solid var(--border);
   background: rgba(255, 255, 255, 0.04);
   color: var(--text);
