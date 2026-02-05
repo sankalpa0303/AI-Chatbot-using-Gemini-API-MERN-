@@ -25,19 +25,20 @@ function SideMenu({ status = "Online", onLogout }) {
         </button>
         {menuOpen && (
           <div className="menu-card-menu">
-            <Link className="icon-btn-menu" to="/chat" aria-label="about">
+            <Link className="icon-btn-menu-chat" to="/chat" aria-label="about">
               <i className="fa-solid fa-user-astronaut"></i>
               <span>Chat</span>
-            </Link>
-
-            <Link className="icon-btn-menu" to="/about" aria-label="about">
-              <i className="fa-solid fa-user-astronaut"></i>
-              <span>About</span>
             </Link>
 
             <Link className="icon-btn-menu" to="/profile" aria-label="Profile">
               <i className="fa-solid fa-user"></i>
               <span>Profile</span>
+            </Link>
+
+            
+            <Link className="icon-btn-menu" to="/about" aria-label="about">
+              <i className="fa-solid fa-circle-info"></i>
+              <span>About</span>
             </Link>
 
             <Link className="icon-btn-menu" to="/settings" aria-label="Settings">

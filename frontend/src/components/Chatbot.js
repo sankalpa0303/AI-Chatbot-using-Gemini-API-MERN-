@@ -314,14 +314,15 @@ function Chatbot() {
             </button>
             {menuOpen && (
               <div className="menu-card-chat">
-                <Link className="icon-btn-chat" to="/about" aria-label="about">
-                  <i className="fa-solid fa-user-astronaut"></i>
-                  <span>About</span>
-                </Link>
-
+               
                 <Link className="icon-btn-chat" to="/profile" aria-label="Profile">
                   <i className="fa-solid fa-user"></i>
                   <span>Profile</span>
+                </Link>
+
+                 <Link className="icon-btn-chat" to="/about" aria-label="about">
+                  <i className="fa-solid fa-circle-info"></i>
+                  <span>About</span>
                 </Link>
 
                 <Link className="icon-btn-chat" to="/settings" aria-label="Settings">
