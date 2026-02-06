@@ -31,10 +31,10 @@ async function start() {
       console.warn("MONGODB_URI not set — chat history persistence disabled");
     } else {
       await mongoose.connect(MONGODB_URI);
-      console.log("MongoDB connected for chat history");
+      console.log("MongoDB connected👽 ");
     }
     app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
+      console.log(`Server running on port ${PORT} 🤖`);
     });
   } catch (err) {
     console.error("Failed to connect to MongoDB", err);
